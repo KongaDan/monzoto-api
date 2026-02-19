@@ -16,43 +16,28 @@ class TransactionRepository extends ServiceEntityRepository
         parent::__construct($registry, Transaction::class);
     }
 
-    public function records(array $criteria = []){
-        $qb = $this->createQueryBuilder('t');
-        if(isset($criteria['step']) && in_array($criteria['step'], [1,2,3,5])) {
-
-            if($criteria['step'] == 1 || $criteria['step'] == 2){
-                $qb->andWhere('t.step IN (:steps)')
-                    ->setParameter('steps', [1,2]);
-            }else {
-                $qb->andWhere('t.step = :step')
-                    ->setParameter('step', $criteria['step']);
-            }
-        }
-        return $qb->orderBy('t.id', 'DESC')->getQuery()->getResult();
+    /** @return Transaction[] */
+    public function findByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.orderCode', 'o')
+            ->andWhere('o.customer = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
-    //    /**
-    //     * @return Transaction[] Returns an array of Transaction objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Transaction
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /** @return Transaction[] */
+    public function findByOrder(int $orderId): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.orderCode = :orderId')
+            ->setParameter('orderId', $orderId)
+            ->orderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

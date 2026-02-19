@@ -16,28 +16,27 @@ class WishlistItemRepository extends ServiceEntityRepository
         parent::__construct($registry, WishlistItem::class);
     }
 
-    //    /**
-    //     * @return WishlistItem[] Returns an array of WishlistItem objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('w')
-    //            ->andWhere('w.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('w.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /** @return WishlistItem[] */
+    public function findByWishlist(int $wishlistId): array
+    {
+        return $this->createQueryBuilder('wi')
+            ->andWhere('wi.wishlist = :wishlistId')
+            ->setParameter('wishlistId', $wishlistId)
+            ->orderBy('wi.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
-    //    public function findOneBySomeField($value): ?WishlistItem
-    //    {
-    //        return $this->createQueryBuilder('w')
-    //            ->andWhere('w.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findExistingItem(int $wishlistId, int $productId): ?WishlistItem
+    {
+        return $this->createQueryBuilder('wi')
+            ->andWhere('wi.wishlist = :wishlistId')
+            ->andWhere('wi.product = :productId')
+            ->setParameter('wishlistId', $wishlistId)
+            ->setParameter('productId', $productId)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

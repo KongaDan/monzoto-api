@@ -80,6 +80,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->isDeleted = false;
+        $this->isAdmin = false;
     }
 
     public function __toString()

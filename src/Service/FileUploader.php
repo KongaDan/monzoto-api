@@ -29,7 +29,7 @@ class FileUploader
             $filename
         );
 
-        return $filename;
+        return $this->publicDir.'/'.$subDir.'/'.$filename;
     }
 
     public function uploadPrivate(UploadedFile $file, string $subDir): string
@@ -45,7 +45,7 @@ class FileUploader
             $filename
         );
 
-        return $filename;
+        return $this->privateDir.'/'.$subDir.'/'.$filename;
     }
 
     public function delete(string $absolutePath): void

@@ -40,4 +40,34 @@ class CityRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /** @return City[] */
+    public function findAllActive(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.isActive = :active')
+            ->andWhere('c.isDeleted = :deleted')
+            ->setParameter('active', true)
+            ->setParameter('deleted', false)
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /** @return City[] */
+    public function findByCountry(int $countryId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.country = :countryId')
+            ->andWhere('c.isActive = :active')
+            ->andWhere('c.isDeleted = :deleted')
+            ->setParameter('countryId', $countryId)
+            ->setParameter('active', true)
+            ->setParameter('deleted', false)
+            ->orderBy('c.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

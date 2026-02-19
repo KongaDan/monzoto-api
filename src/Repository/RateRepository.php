@@ -40,4 +40,22 @@ class RateRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findActiveRate(string $currencyFrom, string $currencyTo): ?Rate
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.currencyFrom = :from')
+            ->andWhere('r.currencyTo = :to')
+            ->andWhere('r.isActive = :active')
+            ->andWhere('r.isDeleted = :deleted')
+            ->setParameter('from', $currencyFrom)
+            ->setParameter('to', $currencyTo)
+            ->setParameter('active', true)
+            ->setParameter('deleted', false)
+            ->orderBy('r.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

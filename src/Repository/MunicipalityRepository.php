@@ -40,4 +40,34 @@ class MunicipalityRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /** @return Municipality[] */
+    public function findAllActive(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.isActive = :active')
+            ->andWhere('m.isDeleted = :deleted')
+            ->setParameter('active', true)
+            ->setParameter('deleted', false)
+            ->orderBy('m.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /** @return Municipality[] */
+    public function findByCity(int $cityId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.city = :cityId')
+            ->andWhere('m.isActive = :active')
+            ->andWhere('m.isDeleted = :deleted')
+            ->setParameter('cityId', $cityId)
+            ->setParameter('active', true)
+            ->setParameter('deleted', false)
+            ->orderBy('m.name', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

@@ -40,4 +40,22 @@ class PromoRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findActiveByCode(string $code): ?Promo
+    {
+        $now = new \DateTimeImmutable();
+
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.code = :code')
+            ->andWhere('p.isActive = :active')
+            ->andWhere('p.validFrom <= :now')
+            ->andWhere('p.validTo >= :now')
+            ->andWhere('p.usageCount < p.usageLimit')
+            ->setParameter('code', $code)
+            ->setParameter('active', true)
+            ->setParameter('now', $now)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }
