@@ -4,7 +4,10 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductRepository;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -14,15 +17,19 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product:list', 'product:detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:list', 'product:detail'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:detail'])]
     private ?string $reference = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:detail'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
@@ -33,42 +40,58 @@ class Product
     pattern: '/^\d+(\.\d{1,2})?$/',
     message: 'Le prix doit être un nombre décimal valide.'
 )]
+    #[Groups(['product:list', 'product:detail'])]
     private ?string $price = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:list', 'product:detail'])]
     private ?string $currency = null;
 
     #[ORM\Column]
+    #[Groups(['product:detail'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['product:detail'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:list', 'product:detail'])]
     private ?string $picture = null;
 
     #[ORM\ManyToOne]
+    #[Groups(['product:list', 'product:detail'])]
     private ?Category $category = null;
 
     #[ORM\Column]
+    #[Groups(['product:list', 'product:detail'])]
     private ?bool $isActive = null;
 
     #[ORM\Column]
+    #[Groups(['product:list', 'product:detail'])]
     private ?bool $isAvailable = null;
 
     #[ORM\Column]
+    #[Groups(['product:list', 'product:detail'])]
     private ?bool $isBestSellerFlag = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['product:list', 'product:detail'])]
     private ?float $averageRating = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['product:list', 'product:detail'])]
     private ?int $reviewCount = null;
+
+    #[ORM\OneToMany(targetEntity: ProductMedia::class, mappedBy: 'product', cascade: ['persist', 'remove'])]
+    #[Groups(['product:detail'])]
+    private Collection $productMedia;
 
     public function __construct()
     {
         $this->isActive = true;
         $this->isAvailable = true;
+        $this->productMedia = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -238,6 +261,35 @@ class Product
     public function setReviewCount(?int $reviewCount): static
     {
         $this->reviewCount = $reviewCount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductMedia>
+     */
+    public function getProductMedia(): Collection
+    {
+        return $this->productMedia;
+    }
+
+    public function addProductMedia(ProductMedia $productMedia): static
+    {
+        if (!$this->productMedia->contains($productMedia)) {
+            $this->productMedia->add($productMedia);
+            $productMedia->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductMedia(ProductMedia $productMedia): static
+    {
+        if ($this->productMedia->removeElement($productMedia)) {
+            if ($productMedia->getProduct() === $this) {
+                $productMedia->setProduct(null);
+            }
+        }
 
         return $this;
     }

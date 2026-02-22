@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/promo', name: 'api_promo_')]
+#[Route('/api/secure/promo', name: 'api_promo_')]
 class PromoController extends AbstractController
 {
     public function __construct(

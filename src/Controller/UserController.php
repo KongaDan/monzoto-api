@@ -24,11 +24,12 @@ class UserController extends AbstractController
         private FileUploader $fileUploader
     ) {}
 
-    private function format(User $user): array
+    private function format(User $user, string $password = ''): array
     {
         return [
             'id'           => $user->getId(),
             'username'     => $user->getUsername(),
+            'password'     => $password,
             'email'        => $user->getEmail(),
             'firstname'    => $user->getFirstname(),
             'lastname'     => $user->getLastname(),
@@ -121,7 +122,7 @@ class UserController extends AbstractController
             $this->em->persist($user);
             $this->em->flush();
 
-            return $this->apiResponse->success($this->format($user), 'Compte créé avec succès.', 201);
+            return $this->apiResponse->success($this->format($user, $password), 'Compte créé avec succès.', 201);
         } catch (\Exception $e) {
             return $this->apiResponse->error('Une erreur interne est survenue.', 500, $e->getMessage());
         }
