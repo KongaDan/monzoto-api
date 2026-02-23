@@ -38,7 +38,7 @@ class Cart
     #[ORM\Column]
     private ?float $price = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 10)]
     private ?string $currency = null;
 
 

@@ -13,7 +13,7 @@ class Municipality
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $name = null;
 
     #[ORM\Column]
@@ -29,7 +29,7 @@ class Municipality
     #[ORM\Column(nullable: true)]
     private ?float $shippingCost = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 10, nullable: true)]
     private ?string $currency = null;
 
     #[ORM\Column]

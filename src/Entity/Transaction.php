@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\TransactionRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
@@ -31,7 +29,7 @@ class Transaction
     #[ORM\Column(length: 255)]
     private ?string $amount = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 10)]
     private ?string $currency = null;
 
     #[ORM\Column(length: 255)]
@@ -52,6 +50,14 @@ class Transaction
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $orderCode = null;
+
+    // URL de redirection pour le paiement par carte bancaire
+    #[ORM\Column(length: 1024, nullable: true)]
+    private ?string $paymentUrl = null;
+
+    // Référence retournée par le provider après callback
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $providerReference = null;
 
     public function __construct()
     {
@@ -156,6 +162,30 @@ class Transaction
     public function setOrderCode(?Order $orderCode): static
     {
         $this->orderCode = $orderCode;
+
+        return $this;
+    }
+
+    public function getPaymentUrl(): ?string
+    {
+        return $this->paymentUrl;
+    }
+
+    public function setPaymentUrl(?string $paymentUrl): static
+    {
+        $this->paymentUrl = $paymentUrl;
+
+        return $this;
+    }
+
+    public function getProviderReference(): ?string
+    {
+        return $this->providerReference;
+    }
+
+    public function setProviderReference(?string $providerReference): static
+    {
+        $this->providerReference = $providerReference;
 
         return $this;
     }

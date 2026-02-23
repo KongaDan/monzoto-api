@@ -6,7 +6,6 @@ use App\Repository\PromoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PromoRepository::class)]
-#[ORM\HasLifecycleCallbacks()]
 class Promo
 {
     const TYPE_PERCENTAGE = 1;
@@ -26,7 +25,7 @@ class Promo
     #[ORM\Column]
     private ?float $value = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 10)]
     private ?string $currency = null;
     
     #[ORM\Column]
@@ -54,22 +53,6 @@ class Promo
     {
         $this->isActive = false;
         $this->usageCount = 0;
-    }
-
-    #[ORM\PreUpdate]
-    public function preUpdate(): void
-    {
-        if ($this->validTo && $this->validTo < new \DateTimeImmutable()) {
-            $this->isActive = false;
-        }
-
-        if($this->validFrom && $this->validFrom > new \DateTimeImmutable()) {
-            $this->isActive = false;
-        }
-
-        if($this->usageLimit !== null && $this->usageCount >= $this->usageLimit) {
-            $this->isActive = false;
-        }
     }
 
     public function getId(): ?int

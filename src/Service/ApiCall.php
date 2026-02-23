@@ -22,7 +22,7 @@ class ApiCall
     const CARD_PAYMENT_GATEWAY = "https://cardpayment.flexpay.cd/v1.1/pay";
     const MOBILE_PAYMENT_GATEWAY = "https://backend.flexpay.cd/api/rest/v1/paymentService";
     const CHECK_TRANSACTION = "https://backend.flexpay.cd/api/rest/v1/check";
-
+// exemple : https://backend.flexpay.cd/api/rest/v1/check/{orderNumber} GET
     # PAYMENT METHODS
     const PAYMENT_METHOD_CARD = "VISA";
     const PAYMENT_METHOD_MOBILE = "MOBILE MONEY";

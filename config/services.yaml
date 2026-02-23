@@ -29,5 +29,11 @@ services:
             $uploadPublicDir: '%upload_public_dir%'
             $uploadPrivateDir: '%upload_private_dir%'
 
+    App\Service\FlexPayService:
+        arguments:
+            $appMerchant:    '%env(MERCHANT)%'
+            $appToken:       '%env(TOKEN)%'
+            $appCallbackUrl: '%env(FLEXPAY_CALLBACK_URL)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

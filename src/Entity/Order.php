@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OrderRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -13,6 +14,7 @@ class Order
     const PAYMENT_STATUS_PAID = 2;
     const PAYMENT_STATUS_FAILED = 3;
     const PAYMENT_STATUS_REFUNDED = 4;
+    const PAYMENT_STATUS_CANCEL = 5;
 
     const FULFILLMENT_STATUS_PENDING = 1;
     const FULFILLMENT_STATUS_CONFIRMED = 2;
@@ -27,9 +29,11 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['order:read', 'order:list'])]
     private ?string $code = null;
     
     #[ORM\ManyToOne]
@@ -37,12 +41,15 @@ class Order
     private ?User $customer = null;
 
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?bool $isPaid = null;
 
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?int $paymentStatus = null;
 
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?int $FulfillmentStatus = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
@@ -51,56 +58,67 @@ class Order
 
     // Total de la commande avant application des remises et ajout des frais de livraison
     #[ORM\Column]
+    #[Groups(['order:read'])]
     private ?float $subTotal = null;
 
     // Total des remises appliquées à la commande
     #[ORM\Column(nullable: true)]
+    #[Groups(['order:read'])]
     private ?float $discountTotal = null;
 
     // Coût de livraison pour la commande
     #[ORM\Column(nullable: true)]
+    #[Groups(['order:read'])]
     private ?float $shippingCost = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 10, nullable: true)]
+    #[Groups(['order:read'])]
     private ?string $currencyShipping = null;
 
     // Total final de la commande après application des remises et ajout des frais de livraison
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?float $total = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 10)]
+    #[Groups(['order:read', 'order:list'])]
     private ?string $currency = null;
-
-    // Taux de change utilisé pour convertir la monnaie 
-    #[ORM\Column(nullable: true)]
-    private ?float $exchangRateUsed = null;
 
     // Méthode de paiement utilisée pour la commande
     #[ORM\Column(nullable: true)]
+    #[Groups(['order:read'])]
     private ?int $paymentMethod = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['order:read'])]
     private ?string $customerEmail = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['order:read'])]
     private ?string $customerFirstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['order:read'])]
     private ?string $customerLastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['order:read'])]
     private ?string $customerPhone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['order:read'])]
     private ?string $customerAddress = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['order:read', 'order:list'])]
     private ?\DateTimeImmutable $deliveredAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['order:read'])]
     private ?string $notes = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['order:read', 'order:list'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -356,18 +374,6 @@ class Order
     public function setPaymentMethod(?int $paymentMethod): static
     {
         $this->paymentMethod = $paymentMethod;
-
-        return $this;
-    }
-
-    public function getExchangRateUsed(): ?float
-    {
-        return $this->exchangRateUsed;
-    }
-
-    public function setExchangRateUsed(?float $exchangRateUsed): static
-    {
-        $this->exchangRateUsed = $exchangRateUsed;
 
         return $this;
     }

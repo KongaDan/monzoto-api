@@ -37,6 +37,9 @@ class AddressController extends AbstractController
                 'city' => [
                     'id'   => $address->getMunicipality()?->getCity()?->getId(),
                     'name' => $address->getMunicipality()?->getCity()?->getName(),
+                    'shippingCost' => $address->getMunicipality()->getShippingCost(),
+                    'currency' => $address->getMunicipality()->getCurrency(),
+                    'isShippingAvailable' => $address->getMunicipality()->isShippingAvailable(),
                 ],
             ],
         ];
