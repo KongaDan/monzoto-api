@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/secure/users', name: 'api_user_')]
+#[Route('/api', name: 'api_user_')]
 class UserController extends AbstractController
 {
     public function __construct(
@@ -49,7 +49,7 @@ class UserController extends AbstractController
      * Créer un compte utilisateur (registration publique).
      * Body multipart ou JSON : username, password, email, firstname, lastname
      */
-    #[Route('', name: 'create', methods: ['POST'])]
+    #[Route('/users/create', name: 'create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         try {
@@ -131,7 +131,7 @@ class UserController extends AbstractController
     /**
      * Détails de l'utilisateur connecté.
      */
-    #[Route('/me', name: 'show', methods: ['GET'])]
+    #[Route('/secure/users/me', name: 'show', methods: ['GET'])]
     public function show(): JsonResponse
     {
         try {
@@ -153,7 +153,7 @@ class UserController extends AbstractController
      * Accepte multipart/form-data (pour la photo) ou JSON.
      * Champs : firstname, lastname, email, phone, gender, birthAt, placeOfBirth, language, currency, picture (file), password
      */
-    #[Route('/me', name: 'update', methods: ['POST', 'PUT', 'PATCH'])]
+    #[Route('/secure/users/me', name: 'update', methods: ['POST', 'PUT', 'PATCH'])]
     public function update(Request $request): JsonResponse
     {
         try {
@@ -226,7 +226,7 @@ class UserController extends AbstractController
     /**
      * Suppression (soft delete) du compte de l'utilisateur connecté.
      */
-    #[Route('/me', name: 'delete', methods: ['DELETE'])]
+    #[Route('/secure/users/me', name: 'delete', methods: ['DELETE'])]
     public function delete(): JsonResponse
     {
         try {
