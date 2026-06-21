@@ -77,9 +77,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $isDeleted = null;
 
+    #[ORM\Column]
+    private ?bool $isVerified = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $emailVerifiedAt = null;
+
+    #[ORM\ManyToOne]
+    private ?Address $defaultAddress = null;
+
+    #[ORM\OneToOne(mappedBy: 'customer', targetEntity: LoyaltyAccount::class, cascade: ['persist', 'remove'])]
+    private ?LoyaltyAccount $loyaltyAccount = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->isVerified = false;
     }
 
     public function __toString()
@@ -326,6 +339,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsDeleted(?bool $isDeleted): static
     {
         $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getEmailVerifiedAt(): ?\DateTimeImmutable
+    {
+        return $this->emailVerifiedAt;
+    }
+
+    public function setEmailVerifiedAt(?\DateTimeImmutable $emailVerifiedAt): static
+    {
+        $this->emailVerifiedAt = $emailVerifiedAt;
+
+        return $this;
+    }
+
+    public function getDefaultAddress(): ?Address
+    {
+        return $this->defaultAddress;
+    }
+
+    public function setDefaultAddress(?Address $defaultAddress): static
+    {
+        $this->defaultAddress = $defaultAddress;
+
+        return $this;
+    }
+
+    public function getLoyaltyAccount(): ?LoyaltyAccount
+    {
+        return $this->loyaltyAccount;
+    }
+
+    public function setLoyaltyAccount(?LoyaltyAccount $loyaltyAccount): static
+    {
+        if ($loyaltyAccount === null && $this->loyaltyAccount !== null) {
+            $this->loyaltyAccount->setCustomer(null);
+        }
+
+        if ($loyaltyAccount !== null && $loyaltyAccount->getCustomer() !== $this) {
+            $loyaltyAccount->setCustomer($this);
+        }
+
+        $this->loyaltyAccount = $loyaltyAccount;
 
         return $this;
     }

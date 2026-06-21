@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Review
 {
     const STATUS_PENDING = 1;
@@ -41,10 +42,24 @@ class Review
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column]
+    private ?int $helpfulCount = null;
+
+    #[ORM\Column]
+    private ?bool $isVerifiedPurchase = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\ManyToOne]
+    private ?OrderItem $orderItem = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->status = self::STATUS_PENDING;
+        $this->helpfulCount = 0;
+        $this->isVerifiedPurchase = false;
     }
 
     public function getId(): ?int
@@ -132,6 +147,53 @@ class Review
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getHelpfulCount(): ?int
+    {
+        return $this->helpfulCount;
+    }
+
+    public function setHelpfulCount(int $helpfulCount): static
+    {
+        $this->helpfulCount = $helpfulCount;
+
+        return $this;
+    }
+
+    public function isVerifiedPurchase(): ?bool
+    {
+        return $this->isVerifiedPurchase;
+    }
+
+    public function setIsVerifiedPurchase(bool $isVerifiedPurchase): static
+    {
+        $this->isVerifiedPurchase = $isVerifiedPurchase;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function getOrderItem(): ?OrderItem
+    {
+        return $this->orderItem;
+    }
+
+    public function setOrderItem(?OrderItem $orderItem): static
+    {
+        $this->orderItem = $orderItem;
 
         return $this;
     }

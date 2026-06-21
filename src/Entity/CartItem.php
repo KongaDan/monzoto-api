@@ -21,6 +21,9 @@ class CartItem
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
+    #[ORM\ManyToOne]
+    private ?ProductVariant $productVariant = null;
+
     #[ORM\Column]
     private ?int $quantity = null;
 
@@ -56,6 +59,18 @@ class CartItem
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getProductVariant(): ?ProductVariant
+    {
+        return $this->productVariant;
+    }
+
+    public function setProductVariant(?ProductVariant $productVariant): static
+    {
+        $this->productVariant = $productVariant;
 
         return $this;
     }

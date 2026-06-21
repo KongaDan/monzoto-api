@@ -29,11 +29,9 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['order:read', 'order:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['order:read', 'order:list'])]
     private ?string $code = null;
     
     #[ORM\ManyToOne]
@@ -41,15 +39,12 @@ class Order
     private ?User $customer = null;
 
     #[ORM\Column]
-    #[Groups(['order:read', 'order:list'])]
     private ?bool $isPaid = null;
 
     #[ORM\Column]
-    #[Groups(['order:read', 'order:list'])]
     private ?int $paymentStatus = null;
 
     #[ORM\Column]
-    #[Groups(['order:read', 'order:list'])]
     private ?int $FulfillmentStatus = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
@@ -58,7 +53,6 @@ class Order
 
     // Total de la commande avant application des remises et ajout des frais de livraison
     #[ORM\Column]
-    #[Groups(['order:read'])]
     private ?float $subTotal = null;
 
     // Total des remises appliquées à la commande
@@ -124,6 +118,33 @@ class Order
     #[ORM\Column(nullable: true)]
     private ?bool $isDeleted = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $taxTotal = null;
+
+    #[ORM\ManyToOne]
+    private ?ShippingMethod $shippingMethod = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $trackingNumber = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $carrier = null;
+
+    #[ORM\Column]
+    private ?bool $giftWrap = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $giftMessage = null;
+
+    #[ORM\ManyToOne]
+    private ?Address $shippingAddress = null;
+
+    #[ORM\ManyToOne]
+    private ?Address $billingAddress = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $refundedAt = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -131,6 +152,7 @@ class Order
         $this->paymentStatus = self::PAYMENT_STATUS_PENDING;
         $this->FulfillmentStatus = self::FULFILLMENT_STATUS_PENDING;
         $this->code = bin2hex(random_bytes(10));
+        $this->giftWrap = false;
     }
 
     public function getId(): ?int
@@ -398,6 +420,114 @@ class Order
     public function setIsDeleted(?bool $isDeleted): static
     {
         $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getTaxTotal(): ?float
+    {
+        return $this->taxTotal;
+    }
+
+    public function setTaxTotal(?float $taxTotal): static
+    {
+        $this->taxTotal = $taxTotal;
+
+        return $this;
+    }
+
+    public function getShippingMethod(): ?ShippingMethod
+    {
+        return $this->shippingMethod;
+    }
+
+    public function setShippingMethod(?ShippingMethod $shippingMethod): static
+    {
+        $this->shippingMethod = $shippingMethod;
+
+        return $this;
+    }
+
+    public function getTrackingNumber(): ?string
+    {
+        return $this->trackingNumber;
+    }
+
+    public function setTrackingNumber(?string $trackingNumber): static
+    {
+        $this->trackingNumber = $trackingNumber;
+
+        return $this;
+    }
+
+    public function getCarrier(): ?string
+    {
+        return $this->carrier;
+    }
+
+    public function setCarrier(?string $carrier): static
+    {
+        $this->carrier = $carrier;
+
+        return $this;
+    }
+
+    public function isGiftWrap(): ?bool
+    {
+        return $this->giftWrap;
+    }
+
+    public function setGiftWrap(bool $giftWrap): static
+    {
+        $this->giftWrap = $giftWrap;
+
+        return $this;
+    }
+
+    public function getGiftMessage(): ?string
+    {
+        return $this->giftMessage;
+    }
+
+    public function setGiftMessage(?string $giftMessage): static
+    {
+        $this->giftMessage = $giftMessage;
+
+        return $this;
+    }
+
+    public function getShippingAddress(): ?Address
+    {
+        return $this->shippingAddress;
+    }
+
+    public function setShippingAddress(?Address $shippingAddress): static
+    {
+        $this->shippingAddress = $shippingAddress;
+
+        return $this;
+    }
+
+    public function getBillingAddress(): ?Address
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(?Address $billingAddress): static
+    {
+        $this->billingAddress = $billingAddress;
+
+        return $this;
+    }
+
+    public function getRefundedAt(): ?\DateTimeImmutable
+    {
+        return $this->refundedAt;
+    }
+
+    public function setRefundedAt(?\DateTimeImmutable $refundedAt): static
+    {
+        $this->refundedAt = $refundedAt;
 
         return $this;
     }

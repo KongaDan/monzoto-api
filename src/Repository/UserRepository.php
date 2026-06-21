@@ -33,6 +33,34 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * Nombre total de clients (non admin, non supprimés)
+     */
+    public function countCustomers(): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.isAdmin = false OR u.isAdmin IS NULL')
+            ->andWhere('u.isDeleted = false OR u.isDeleted IS NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Nouveaux clients depuis une date donnée
+     */
+    public function countNewCustomersSince(\DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.isAdmin = false OR u.isAdmin IS NULL')
+            ->andWhere('u.isDeleted = false OR u.isDeleted IS NULL')
+            ->andWhere('u.createdAt >= :since')
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

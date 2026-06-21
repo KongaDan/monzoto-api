@@ -16,6 +16,56 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    /**
+     * Nombre de produits actifs
+     */
+    public function countActive(): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.isActive = true')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Nombre de produits indisponibles (actifs mais rupture de stock)
+     */
+    public function countUnavailable(): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.isActive = true')
+            ->andWhere('p.isAvailable = false')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Nombre total de produits
+     */
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Produits bestsellers (flag activé)
+     */
+    public function findBestSellers(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.isActive = true')
+            ->andWhere('p.isBestSellerFlag = true')
+            ->orderBy('p.averageRating', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Product[] Returns an array of Product objects
     //     */

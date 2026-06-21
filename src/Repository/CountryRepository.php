@@ -40,18 +40,4 @@ class CountryRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
-    /** @return Country[] */
-    public function findAllActive(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.isActive = :active')
-            ->andWhere('c.isDeleted = :deleted OR c.isDeleted IS NULL')
-            ->setParameter('active', true)
-            ->setParameter('deleted', false)
-            ->orderBy('c.name', 'ASC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
 }
