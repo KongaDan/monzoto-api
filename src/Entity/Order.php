@@ -29,9 +29,11 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['order:read', 'order:list'])]
     private ?string $code = null;
     
     #[ORM\ManyToOne]
@@ -39,12 +41,15 @@ class Order
     private ?User $customer = null;
 
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?bool $isPaid = null;
 
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?int $paymentStatus = null;
 
     #[ORM\Column]
+    #[Groups(['order:read', 'order:list'])]
     private ?int $FulfillmentStatus = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
@@ -53,6 +58,7 @@ class Order
 
     // Total de la commande avant application des remises et ajout des frais de livraison
     #[ORM\Column]
+    #[Groups(['order:read'])]
     private ?float $subTotal = null;
 
     // Total des remises appliquées à la commande
